@@ -1,2 +1,1 @@
-# prappo
-hhfh
+# algo project
