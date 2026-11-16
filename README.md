@@ -113,7 +113,7 @@ Linux:
 
 ## Academic Information
 
-Course Project
+Course Project for AD & A
 
 Department of Computer Science & Engineering
 
