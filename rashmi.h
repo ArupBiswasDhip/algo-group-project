@@ -1,4 +1,4 @@
-ifndef RASHMI_H
+#ifndef RASHMI_H
 #define RASHMI_H
 
 #include <iostream>
