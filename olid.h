@@ -3,11 +3,14 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
+#include <iomanip>
 using namespace std;
 
-struct ItemRatio {
-    int weight;
-    int profit;
+struct ItemRatio
+{
+    double weight;
+    double profit;
     double Ratio;
     string name;
 };
@@ -15,29 +18,57 @@ struct ItemRatio {
 void runFractionalKnapsack()
 {
     int n;
-    cout << "=== Fractional Knapsack (P/W Ratio) ===" << endl;
-    cout << "Enter the number of items : ";
+
+    cout << "\n=== Fractional Knapsack ===\n";
+
+    cout << "Enter the number of items: ";
     cin >> n;
 
-    ItemRatio item[n];
-    for(int i=0; i<n; i++)
+    if(n <= 0)
     {
-        cout << "Enter the name of item " << i+1 << " : ";
-        cin >> item[i].name;
-        cout << "Enter the weight of item " << i+1 << " : ";
-        cin >> item[i].weight;
-        cout << "Enter the profit of item " << i+1 << " : ";
-        cin >> item[i].profit;
-        item[i].Ratio = (double)item[i].profit / item[i].weight;
+        cout << "Invalid number of items!\n";
+        return;
     }
 
-    int capacity;
-    cout << "Enter the knapsack capacity : ";
+    vector<ItemRatio> item(n);
+
+    for(int i = 0; i < n; i++)
+    {
+        cout << "\nEnter name of item " << i+1 << ": ";
+        cin >> item[i].name;
+
+        cout << "Enter weight: ";
+        cin >> item[i].weight;
+
+        cout << "Enter profit: ";
+        cin >> item[i].profit;
+
+        if(item[i].weight <= 0 || item[i].profit < 0)
+        {
+            cout << "Invalid weight or profit!\n";
+            return;
+        }
+
+        item[i].Ratio =
+            item[i].profit / item[i].weight;
+    }
+
+    double capacity;
+
+    cout << "\nEnter knapsack capacity: ";
     cin >> capacity;
 
-    for(int i=0; i<n-1; i++)
+    if(capacity < 0)
     {
-        for(int j=i+1; j<n; j++)
+        cout << "Invalid capacity!\n";
+        return;
+    }
+
+    // Sort by Profit/Weight Ratio
+
+    for(int i = 0; i < n-1; i++)
+    {
+        for(int j = i+1; j < n; j++)
         {
             if(item[i].Ratio < item[j].Ratio)
             {
@@ -48,24 +79,54 @@ void runFractionalKnapsack()
         }
     }
 
-    double profits = 0.0;
-    int rem_capacity = capacity;
+    double totalProfit = 0.0;
+    double remaining = capacity;
 
-    for(int i=0; i<n; i++)
+    cout << "\nSelected items:\n";
+
+    for(int i = 0; i < n && remaining > 0; i++)
     {
-        if(item[i].weight <= rem_capacity)
+        if(item[i].weight <= remaining)
         {
-            profits += item[i].profit;
-            rem_capacity -= item[i].weight;
+            totalProfit += item[i].profit;
+
+            remaining -= item[i].weight;
+
+            cout << item[i].name
+                 << " - Full item"
+                 << " (Weight: " << item[i].weight << ")"
+                 << endl;
         }
         else
         {
-            profits += item[i].Ratio * rem_capacity;
-            break;
+            double fraction =
+                remaining / item[i].weight;
+
+            double gainedProfit =
+                item[i].Ratio * remaining;
+
+            totalProfit += gainedProfit;
+
+            cout << item[i].name
+                 << " - Fraction: "
+                 << fraction * 100 << "%"
+                 << " (Weight: " << remaining << ")"
+                 << endl;
+
+            remaining = 0;
         }
     }
-    cout << "Total Profit : " << profits << endl;
+
+    cout << fixed << setprecision(2);
+
+    cout << "\nTotal Profit: "
+         << totalProfit << endl;
+
+    cout << "Used Capacity: "
+         << capacity - remaining << endl;
+
+    cout << "Remaining Capacity: "
+         << remaining << endl;
 }
 
 #endif
-
